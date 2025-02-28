@@ -1,0 +1,43 @@
+/* Import fonts for the entire app */
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* Global reset and font styling */
+body {
+    font-family: 'VT323', monospace; /* Game-like retro font for all text */
+    background: linear-gradient(to bottom, #000428, #004e92); /* Spacey background */
+    color: white; /* Default text color */
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings, buttons, and titles get bold game fonts */
+h1, h2, h3, .title, .nes-btn {
+    font-family: 'Press Start 2P', sans-serif; /* Pixelated retro font */
+    text-transform: uppercase;
+    color: #ffae00; /* Bright yellow for titles */
+    text-shadow: 2px 2px #000; /* Retro pixel shadow */
+}
+
+/* Shared reusable balloon styles */
+.nes-balloon {
+    font-family: 'VT323', monospace; /* Retro readable font for chat bubbles */
+    background-color: white; /* Balloon background set to white */
+    color: black; /* Text color set for contrast */
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* Prevent system fallback for pre/code */
+pre, code {
+    font-family: 'Courier New', monospace;
+}
+
+/* Universal hover effect for buttons */
+.nes-btn:hover {
+    background-color: #fff;
+    color: #000;
+    transform: scale(1.1);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}

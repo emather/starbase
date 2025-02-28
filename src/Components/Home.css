@@ -1,0 +1,24 @@
+.home-container {
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    background-image: url('./images/space_base.png'); /* Path to your image */
+    background-size: cover; /* Always fills vertically */
+    background-position: center center; /* Keeps the image centered */
+    background-repeat: no-repeat; /* Prevent tiling */
+    overflow-y: auto; /* Allows vertical scrolling */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+
+area {
+    outline: 2px solid red;
+}
+
+
+@media (max-width: 768px) {
+    .home-container {
+        background-size: cover; /* Maintains vertical fill */
+        background-position: center center; /* Still centers the image */
+    }
+}
+

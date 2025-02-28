@@ -1,0 +1,12 @@
+/* Empty or only page-specific styles if needed (optional) */
+
+/* Example: If About page has specific styling, keep it */
+.icon-list i {
+    font-size: 3rem;
+    color: #ffae00;
+    transition: transform 0.2s ease-in-out;
+}
+
+.icon-list i:hover {
+    transform: scale(1.2);
+}
