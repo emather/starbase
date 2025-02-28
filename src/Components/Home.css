@@ -9,6 +9,11 @@
     overflow-x: hidden; /* Prevents horizontal scrolling */
 }
 
+.ship {
+    background-image: url('./images/ship_land_sprit_sheet.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
 
 area {
     outline: 2px solid red;

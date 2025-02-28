@@ -5,7 +5,14 @@ function Home() {
     const [scaledCoords, setScaledCoords] = useState([]);
     const [debugMode, setDebugMode] = useState(false); // State to toggle debugging
     const [showIntro, setShowIntro] = useState(true); // For intro overlay
+    const [shipPosition, setShipPosition] = useState(-200); // Starting position of the ship (off-screen left)
+    const [frameIndex, setFrameIndex] = useState(0); // Current frame index for the sprite sheet animation
     const containerRef = useRef(null);
+
+    // Sprite sheet properties
+    const totalFrames = 4; // Total frames in the sprite sheet
+    const frameWidth = 256; // Width of each frame (assuming each frame is 64px wide)
+    const spriteSheetWidth = totalFrames * frameWidth; // Total width of the sprite sheet
 
     // Original image dimensions
     const originalImageWidth = 1600;
@@ -47,6 +54,30 @@ function Home() {
         return () => {
             window.removeEventListener("resize", updateCoords);
         };
+    }, []);
+
+    // Animate the ship's horizontal movement
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setShipPosition(prev => {
+                // Reset the ship's position to off-screen left once it leaves the screen
+                if (prev > window.innerWidth) {
+                    return -200; // Starting point (off-screen left)
+                }
+                return prev + 2; // Move 2 pixels per frame
+            });
+        }, 16); // ~60 FPS
+
+        return () => clearInterval(interval); // Cleanup the interval on component unmount
+    }, []);
+
+    // Animate the sprite sheet frames
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFrameIndex(prev => (prev + 1) % totalFrames); // Loop through frames
+        }, 100); // Change frame every 100ms (~10 FPS)
+
+        return () => clearInterval(interval); // Cleanup the interval on component unmount
     }, []);
 
     return (
@@ -92,6 +123,21 @@ function Home() {
                     }
                     return null;
                 })}
+
+            {/* Animated Ship */}
+            <div
+                className="ship"
+                style={{
+                    position: "absolute",
+                    top: "400px", // Adjust this to set the vertical position
+                    left: `${shipPosition}px`,
+                    width: `${frameWidth}px`, // Width of one frame
+                    height: "256px", // Height of the frame
+                    backgroundSize: `${spriteSheetWidth}px auto`, // Total width of the sprite sheet
+                    backgroundPosition: `-${frameIndex * frameWidth}px 0`, // Adjust frame position
+                    zIndex: 15,
+                }}
+            ></div>
 
             {/* Debug Mode Toggle */}
             <div style={{ marginTop: "50px", textAlign: "center" }}>
