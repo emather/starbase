@@ -1,29 +1,59 @@
+/* Global styles - apply to all pages */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    background-color: #001122; /* Fallback color for all non-Home pages */
+}
+
+/* Home page specific fullscreen background */
+body.home-page {
+    background-image: url('./images/space_base.png'); /* Your pano-style image */
+    background-size: cover; /* Always fills vertically */
+    background-position: center center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevent tiling */
+}
+
+
+/* Main content container */
 .home-container {
     width: 100vw; /* Full width of the viewport */
     height: 100vh; /* Full height of the viewport */
-    background-image: url('./images/space_base.png'); /* Path to your image */
-    background-size: cover; /* Always fills vertically */
-    background-position: center center; /* Keeps the image centered */
-    background-repeat: no-repeat; /* Prevent tiling */
     overflow-y: auto; /* Allows vertical scrolling */
-    overflow-x: hidden; /* Prevents horizontal scrolling */
 }
 
+/* Shared base styles for the ship */
 .ship {
+    position: absolute;
+    top: 400px;
+    width: 64px; /* Frame width */
+    height: 64px; /* Frame height */
+    z-index: 15;
+}
+
+/* Sprite sheet animation */
+.ship-sprite {
     background-image: url('./images/ship_land_sprit_sheet.png');
+    background-size: 1024px auto; /* Match total width of the sprite sheet */
+    background-repeat: no-repeat;
+}
+
+/* Static ship image */
+.ship-static {
+    background-image: url('./images/ship.png'); /* Path to static image */
     background-size: contain;
     background-repeat: no-repeat;
 }
 
+/* Highlight areas */
 area {
     outline: 2px solid red;
 }
 
-
+/* Media query for responsive adjustments */
 @media (max-width: 768px) {
     .home-container {
         background-size: cover; /* Maintains vertical fill */
         background-position: center center; /* Still centers the image */
     }
 }
-

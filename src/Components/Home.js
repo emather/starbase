@@ -4,11 +4,13 @@ import "./Home.css";
 function Home() {
     // States
     const [scaledCoords, setScaledCoords] = useState([]);
-    const [debugMode, setDebugMode] = useState(false);
+    const [debugMode, setDebugMode] = useState(false); // Toggles debugging
     const [showIntro, setShowIntro] = useState(true);
     const [shipPosition, setShipPosition] = useState(-200);
     const [frameIndex, setFrameIndex] = useState(0);
     const [isShipActive, setIsShipActive] = useState(false); // Switch to control the ship
+    const [useSpriteSheet, setUseSpriteSheet] = useState(true); // To toggle between sprite sheet and static image
+
 
     const containerRef = useRef(null);
 
@@ -17,7 +19,7 @@ function Home() {
     const frameWidth = 256;
     const spriteSheetWidth = totalFrames * frameWidth;
 
-    // Original dimensions and coords
+    // Original dimensions and clickable areas
     const originalImageWidth = 1600;
     const originalImageHeight = 900;
     const originalCoords = [
@@ -57,19 +59,25 @@ function Home() {
     }, []);
 
     // Animate ship position
+    // Animate ship position smoothly with requestAnimationFrame
     useEffect(() => {
-        if (!isShipActive) return; // Stop animation if the ship is inactive
+        if (!isShipActive) return;
 
-        const interval = setInterval(() => {
+        let animationFrameId; // Track animation frame for cleanup
+        const moveShip = () => {
             setShipPosition((prev) => (prev > window.innerWidth ? -200 : prev + 2)); // Reset position
-        }, 16); // ~60 FPS
+            animationFrameId = requestAnimationFrame(moveShip); // Schedule the next frame
+        };
 
-        return () => clearInterval(interval);
+        animationFrameId = requestAnimationFrame(moveShip); // Start animation
+
+        return () => cancelAnimationFrame(animationFrameId); // Cleanup on stop
     }, [isShipActive]);
+
 
     // Animate sprite sheet frames
     useEffect(() => {
-        if (!isShipActive) return; // Stop animation if the ship is inactive
+        if (!isShipActive) return;
 
         const interval = setInterval(() => {
             setFrameIndex((prev) => (prev + 1) % totalFrames); // Loop frames
@@ -96,22 +104,61 @@ function Home() {
                 </div>
             )}
 
+            {/* Debug Clickable Overlays */}
+            {debugMode &&
+                scaledCoords.map((area, index) => {
+                    if (area.shape === "rect") {
+                        const [x1, y1, x2, y2] = area.coords;
+                        return (
+                            <div
+                                key={index}
+                                onClick={() => (window.location.href = area.href)}
+                                style={{
+                                    position: "absolute",
+                                    left: `${x1}px`,
+                                    top: `${y1}px`,
+                                    width: `${x2 - x1}px`,
+                                    height: `${y2 - y1}px`,
+                                    border: "2px solid red",
+                                    backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                    cursor: "pointer",
+                                    zIndex: 10,
+                                }}
+                            />
+                        );
+                    }
+                    return null;
+                })}
+
             {/* Ship Animation */}
             {isShipActive && (
                 <div
-                    className="ship"
+                    className={`ship ${useSpriteSheet ? "ship-sprite" : "ship-static"}`}
                     style={{
-                        position: "absolute",
-                        top: "400px",
-                        left: `${shipPosition}px`,
-                        width: `${frameWidth}px`,
-                        height: "256px",
-                        backgroundSize: `${spriteSheetWidth}px auto`,
-                        backgroundPosition: `-${frameIndex * frameWidth}px 0`,
-                        zIndex: 15,
+                        left: `${shipPosition}px`, // Dynamically set position
+                        backgroundPosition: useSpriteSheet
+                            ? `-${frameIndex * frameWidth}px 0` // For sprite sheet animation
+                            : "center", // Static image background position
                     }}
                 ></div>
             )}
+
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+                <button
+                    onClick={() => setUseSpriteSheet(!useSpriteSheet)}
+                    style={{
+                        padding: "10px 20px",
+                        backgroundColor: useSpriteSheet ? "#f44336" : "#4caf50",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    {useSpriteSheet ? "Use Static Image" : "Use Sprite Sheet"}
+                </button>
+            </div>
+
 
             {/* Debug Mode and Ship Controls */}
             <div style={{ marginTop: "50px", textAlign: "center" }}>
@@ -129,7 +176,7 @@ function Home() {
                     {debugMode ? "Disable Debug" : "Enable Debug"}
                 </button>
                 <button
-                    onClick={() => setIsShipActive(!isShipActive)} // Toggle ship animation
+                    onClick={() => setIsShipActive(!isShipActive)}
                     style={{
                         padding: "10px 20px",
                         backgroundColor: isShipActive ? "#f44336" : "#4caf50",
